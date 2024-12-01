@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './books-table.css';
+import Modal from '../modal/modal';
+import BookForm from '../book-form/BookForm';
 
 const BooksTable: React.FC = () => {
   const books = Array.from({ length: 20 }, (_, index) => ({
@@ -22,6 +24,15 @@ const BooksTable: React.FC = () => {
   const totalPages = Math.ceil(books.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentBooks = books.slice(startIndex, startIndex + itemsPerPage);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   // Pagination handlers
   const goToNextPage = () => {
@@ -117,7 +128,12 @@ const BooksTable: React.FC = () => {
       </div>
 
       {/* Add Book Button */}
-      <button className="add-book-button">Ajouter un livre</button>
+      <button className="add-book-button" onClick={openModal}>Ajouter un livre</button>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <BookForm/>
+        </Modal>
+      )}
     </div>
   );
 };

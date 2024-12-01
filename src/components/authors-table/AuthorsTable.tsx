@@ -1,27 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './authors-table.css';
+import Modal from '../modal/modal';
+import AuthorForm from '../author-form/AuthorForm';
+import { deleteAuthor, getAllAuthors, saveAuthor, updateAuthor } from '../../api/services/author-service';
+import { SaveAuthorDTO } from '../../api/models/save-author-dto';
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { FaRegEye } from "react-icons/fa";
+import ConfirmModal from '../confirm-modal/ConfirmModal';
 
 const AuthorsTable: React.FC = () => {
-  // Simulating data for 50 authors
-  const allAuthors = Array.from({ length: 50 }, (_, index) => ({
-    id: index + 1,
-    name: `Author ${index + 1}`,
-    description: 'Presentateur...',
-    dateOfBirth: '12/04/2023',
-    email: `author${index + 1}@example.com`,
-    phone: `+237698615${index.toString().padStart(3, '0')}`,
-    nationality: 'Cameroun',
-    gender: index % 2 === 0 ? 'Masculin' : 'Féminin',
-  }));
+  const [authorList, setAuthorList] = useState<SaveAuthorDTO[]>([]);
+  const [singleAuthor, setSingleAuthor] = useState<any>(null);
+  const [deletedId, setDeletedId] = useState<number>();
+
+  const getAuthors = async() => {
+    try {
+      const data = await getAllAuthors();
+      console.log(data);
+      setAuthorList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getAuthors()
+  },[]) 
+ 
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
+
+
+
+  const openConfirmModal = (id: number) => {
+    setConfirmModalOpen(true);
+    setDeletedId(id)
+  }
+
+  const handleConfirm = async() => {
+    await handleDelete(deletedId!)
+    setConfirmModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    console.log("Cancelled!");
+    setConfirmModalOpen(false);
+  };
+
+  const openModal = (data?:any) => {
+    setModalOpen(true);
+     data && setSingleAuthor(data);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   // Pagination logic
-  const totalPages = Math.ceil(allAuthors.length / itemsPerPage);
+  const totalPages = Math.ceil(authorList.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = allAuthors.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = authorList.slice(startIndex, startIndex + itemsPerPage);
 
   // Handlers
   const goToNextPage = () => {
@@ -31,6 +76,36 @@ const AuthorsTable: React.FC = () => {
   const goToPreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
+
+  const handleSubmit = async(formData:any) => {
+    try {
+      if(formData.id) {
+        const data = await updateAuthor(formData.id, formData);
+        console.log(data);
+      }
+      else {
+        const data = await saveAuthor(formData);
+        console.log(data);
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
+  const handleDelete = async(id: number) => {
+    try {
+      const data = await deleteAuthor(id);
+      console.log("Deleted...")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
 
   return (
     <div className="authors-table-container">
@@ -70,7 +145,7 @@ const AuthorsTable: React.FC = () => {
                 <td>
                   <div className="author-name">
                     <img
-                      src="https://via.placeholder.com/40"
+                      src={`http://127.0.0.1:8000/images/authors/${author.photo}`}
                       alt="Author Avatar"
                       className="author-avatar"
                     />
@@ -78,14 +153,21 @@ const AuthorsTable: React.FC = () => {
                   </div>
                 </td>
                 <td>{author.description}</td>
-                <td>{author.dateOfBirth}</td>
+                <td>{author.birthDate}</td>
                 <td>{author.email}</td>
                 <td>{author.phone}</td>
                 <td>{author.nationality}</td>
                 <td>{author.gender}</td>
                 <td>
-                  <button className="block-button">Bloquer</button>
-                  <button className="edit-button">Modifier</button>
+                  <button className="block-button" onClick={() => openConfirmModal(author.id!)}>
+                  <MdDelete />
+                  </button>
+                  <button className="edit-button" onClick={() => openModal(author)}>
+                  <FaEdit />
+                  </button>
+                  <button className='more-button'>
+                  <FaRegEye />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -115,7 +197,20 @@ const AuthorsTable: React.FC = () => {
       </div>
 
       {/* Add Author Button */}
-      <button className="add-author-button">Ajouter un Auteur</button>
+      <button className="add-author-button" onClick={() => openModal()}>Ajouter un Auteur</button>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <AuthorForm onSubmit={handleSubmit} data={singleAuthor}/>
+        </Modal>
+      )}
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          title="Supprimer"
+          message="Etes-vous sur de vouloir supprimer cet auteur ?"
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
 };

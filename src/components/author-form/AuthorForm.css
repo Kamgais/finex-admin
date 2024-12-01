@@ -1,0 +1,129 @@
+/* .author-form {
+    width: 400px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  } */
+  
+  .author-form .form-group {
+    margin-bottom: 15px;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .form-group-upload {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-group-upload span {
+    font-size: 11px;
+  }
+
+  .user-icon-img {
+    width: 75px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: gray;
+  }
+
+  .user-icon-img  img {
+    object-fit: cover;
+    width: 75px;
+    height: 75px;
+  }
+
+  .upload-photo-button  {
+    height: 35px;
+    width: 200px;
+    padding: 10px;
+    font-size: 18px;
+    background-color: #D9D9D9;
+    text-align: center;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+  }
+  
+  .author-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  
+  .author-form input[type="text"],
+  .author-form input[type="email"],
+  .author-form input[type="tel"],
+  .author-form input[type="date"],
+  .author-form textarea,
+  .author-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .author-form input[type="file"] {
+    display: block;
+    font-size: 14px;
+  }
+  
+  .author-form textarea {
+    resize: none;
+    height: 80px;
+  }
+  
+  .phone-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .phone-input-group select {
+    flex-shrink: 0;
+    width: 80px;
+  }
+  
+  .phone-input-group input {
+    flex-grow: 1;
+  }
+  
+  .submit-button {
+    width: 100%;
+    background: #007b8f;
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background: #005f6d;
+  }
+  
+  .author-form input::placeholder,
+  .author-form textarea::placeholder {
+    color: #aaa;
+  }
+  
+  .author-form select {
+    appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
